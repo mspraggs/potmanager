@@ -11,15 +11,21 @@ logger = logging.getLogger(__name__)
 
 class MonzoClient:
 
-    def __init__(self, *, client_id, client_secret, refresh_token):
+    def __init__(
+        self,
+        *,
+        client_id,
+        client_secret,
+        refresh_token,
+        access_token=None,
+    ):
         self.client_id = client_id
         self.client_secret = client_secret
         self.refresh_token = refresh_token
+        self.access_token = access_token
         
         self.accounts = None
         self.pots = None
-
-        self.refresh_credentials()
 
     @property
     def auth_header(self):
@@ -123,12 +129,6 @@ class MonzoClient:
 
         dedupe_id = uuid.uuid4().hex
 
-        logger.info(
-            'Preparing to withdraw from pot: '
-            'pot_id=%s, account_id=%s, amount=%s, dedupe_id=%s',
-            pot_id, account_id, amount, dedupe_id,
-        )
-
         data = {
             'destination_account_id': account_id,
             'amount': amount,
@@ -139,17 +139,17 @@ class MonzoClient:
             headers=self.auth_header, data=data,
         )
 
+        logger.info(
+            'Withdrew money from from pot: '
+            'pot_id=%s, account_id=%s, amount=%s, dedupe_id=%s',
+            pot_id, account_id, amount, dedupe_id,
+        )
+
         return response.json()
 
     def deposit_to_pot(self, pot_id, account_id, amount):
 
         dedupe_id = uuid.uuid4().hex
-
-        logger.info(
-            'Preparing to deposit to pot: '
-            'account_id=%s, pot_id=%s, amount=%s, dedupe_id=%s',
-            account_id, pot_id, amount, dedupe_id,
-        )
 
         data = {
             'source_account_id': account_id,
@@ -159,6 +159,12 @@ class MonzoClient:
         response = self._put(
             f'https://api.monzo.com/pots/{pot_id}/deposit',
             headers=self.auth_header, data=data,
+        )
+
+        logger.info(
+            'Deposited money to pot: '
+            'account_id=%s, pot_id=%s, amount=%s, dedupe_id=%s',
+            account_id, pot_id, amount, dedupe_id,
         )
 
         return response.json()

@@ -3,4 +3,4 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 VOLUME ["/app/"]
 WORKDIR /app/
-ENTRYPOINT python main.py 1405
+ENTRYPOINT python schedule.py
