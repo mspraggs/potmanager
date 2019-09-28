@@ -1,7 +1,7 @@
 """The main pot management app.
 
 Usage:
-  main.py [--dry-run] <amount>
+  main.py [--dry-run] [--force] <amount>
   main.py (-h | --help)
   main.py --version
 
@@ -9,6 +9,7 @@ Options:
   -h --help     Show this screen.
   --version     Show version.
   --dry-run     Don't execute transfers.
+  --force       Override scheduling and force transfer.
 
 """
 import datetime
@@ -48,7 +49,7 @@ if __name__ == '__main__':
 
     today = datetime.date.today()
 
-    if today.weekday() >= 5:
+    if not arguments['--force'] and today.weekday() >= 5:
         sys.exit()
 
     accounts = client.get_accounts()
