@@ -12,6 +12,7 @@ Options:
 
 """
 import datetime
+import logging
 import sys
 
 from docopt import DocoptExit
@@ -19,6 +20,15 @@ from docopt import docopt
 
 import monzo
 import settings
+
+
+logging.basicConfig(
+    format=(
+        '[%(asctime)s] [PID %(process)d] [%(threadName)s] [%(name)s] '
+        '[%(levelname)s] %(message)s'
+    ),
+    level=logging.INFO,
+)
 
 
 if __name__ == '__main__':
