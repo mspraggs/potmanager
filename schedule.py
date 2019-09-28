@@ -14,7 +14,7 @@ import tasks  # imported for its side-effects
 
 logging.basicConfig(
     format="[%(asctime)s] [PID %(process)d] [%(threadName)s] [%(name)s] [%(levelname)s] %(message)s",
-    level=logging.DEBUG,
+    level=logging.INFO,
 )
 
 
