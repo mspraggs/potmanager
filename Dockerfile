@@ -1,4 +1,6 @@
 FROM python:3.6.9-slim
-COPY . /app
-RUN pip install -r /app/requirements.txt
-CMD python /app/main.py --dry-run 1405
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+VOLUME ["/app/"]
+WORKDIR /app/
+ENTRYPOINT python main.py --dry-run 1405
