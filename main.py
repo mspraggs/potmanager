@@ -32,14 +32,14 @@ if __name__ == '__main__':
         print('Amount must be an integer.')
         sys.exit()
 
+    client = monzo.MonzoClient.from_file(
+        settings.MONZO_CREDENTIALS_FILE, 'json',
+    )
+
     today = datetime.date.today()
 
     if today.weekday() >= 5:
         sys.exit()
-
-    client = monzo.MonzoClient.from_file(
-        settings.MONZO_CREDENTIALS_FILE, 'json',
-    )
 
     accounts = client.get_accounts()
     pots = client.get_pots()
