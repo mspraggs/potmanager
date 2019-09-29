@@ -7,6 +7,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 import cron
 import logging
+import pytz
 import signal
 import sys  
 import tasks  # imported for its side-effects
@@ -19,7 +20,7 @@ logging.basicConfig(
 
 
 def main():
-    scheduler = BlockingScheduler()
+    scheduler = BlockingScheduler(timezone=pytz.timezone('Europe/London'))
     for trigger, job_name, func in cron.JOBS:
         # job_path = f"{module_path}:{func_name}.send"
         scheduler.add_job(func, trigger=trigger, name=job_name)
