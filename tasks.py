@@ -29,7 +29,7 @@ def _get_credentials(client=None):
     }
 
 
-@cron('* */6 * * *')  # Run every six hours
+@cron('0 */6 * * *')  # Run every six hours
 @dramatiq.actor
 def refresh_monzo_credentials():
     redis_client = redis.Redis(host='redis')
