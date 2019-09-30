@@ -35,7 +35,7 @@ def refresh_monzo_credentials():
     redis_client = redis.Redis(host='redis')
 
     credentials = _get_credentials(redis_client)
-    
+
     monzo_client = monzo.MonzoClient(**credentials)
     monzo_client.refresh_credentials()
 
@@ -48,7 +48,7 @@ def refresh_monzo_credentials():
     )
 
 
-@cron('0 19 * * 1,2,3,4,5')
+@cron('0 19 * * 0,1,2,3,4')
 @dramatiq.actor
 def withdraw_from_pot():
     redis_client = redis.Redis(host='redis')
