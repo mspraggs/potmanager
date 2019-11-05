@@ -85,6 +85,31 @@ class MonzoClient:
             self.client_id,
         )
 
+    def get_credentials(self, auth_code, redirect_uri):
+
+        data = {
+            'grant_type': 'authorization_code',
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'code': auth_code,
+            'redirect_uri': redirect_uri,
+        }
+
+        response = requests.post(
+            'https://api.monzo.com/oauth2/token',
+            data=data,
+        )
+        response.raise_for_status()
+
+        response_data = response.json()
+        self.access_token = response_data['access_token']
+        self.refresh_token = response_data['refresh_token']
+
+        logger.info(
+            'Successfully obtained client credentials: client_id=%s',
+            self.client_id,
+        )
+
     def get_accounts(self):
 
         if self.accounts:

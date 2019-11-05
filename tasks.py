@@ -1,5 +1,6 @@
 import datetime
 import logging
+from urllib.parse import quote_plus
 
 import dramatiq
 from dramatiq.brokers.redis import RedisBroker
@@ -50,6 +51,39 @@ def _add_months(start, num_months):
         year=start.year + num_years,
         month=new_month,
         day=start.day,
+    )
+
+
+def generate_monzo_auth_url(state=None):
+    redis_client = redis.Redis(host='redis')
+
+    credentials = _get_credentials(redis_client)
+    redirect_uri = redis_client.get('redirect_uri').decode()
+
+    state = state or ''
+
+    return (
+        'https://auth.monzo.com/?'
+        'client_id={client_id}&redirect_uri={redirect_uri}&'
+        'response_type=code&state={state}'
+    ).format(state=state, redirect_uri=quote_plus(redirect_uri), **credentials)
+
+
+def get_monzo_credentials(auth_code):
+    redis_client = redis.Redis(host='redis')
+
+    credentials = _get_credentials(redis_client)
+    redirect_uri = redis_client.get('redirect_uri').decode()
+
+    monzo_client = monzo.MonzoClient(**credentials)
+    monzo_client.get_credentials(auth_code, redirect_uri)
+
+    redis_client.set('access_token', monzo_client.access_token)
+    redis_client.set('refresh_token', monzo_client.refresh_token)
+
+    logger.info(
+        'Obtained Monzo credentials: client_id=%s',
+        credentials['client_id'],
     )
 
 
