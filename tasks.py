@@ -127,7 +127,7 @@ def withdraw_from_pot():
 def deposit_to_pot():
     redis_client = redis.Redis(host='redis')
 
-    today = datetime.today()
+    today = datetime.date.today()
     month_ahead = _add_months(today, 1)
     num_days = _count_business_days_between_dates(today, month_ahead)
 
