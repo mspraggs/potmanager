@@ -88,7 +88,7 @@ def get_monzo_credentials(auth_code):
 
 
 @cron('0 */6 * * *')  # Run every six hours
-@dramatiq.actor
+@dramatiq.actor(max_retries=5)
 def refresh_monzo_credentials():
     redis_client = redis.Redis(host='redis')
 
@@ -107,7 +107,7 @@ def refresh_monzo_credentials():
 
 
 @cron('0 19 * * 0,1,2,3,4')
-@dramatiq.actor
+@dramatiq.actor(max_retries=5)
 def withdraw_from_pot():
     redis_client = redis.Redis(host='redis')
     credentials = _get_credentials(redis_client)
